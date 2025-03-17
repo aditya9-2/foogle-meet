@@ -72,7 +72,20 @@ wss.on('connection', function connection(ws) {
                 });
             }
 
+            if (parsedData.type === "SEND_MESSAGE") {
 
+                const { roomId, userId, message } = parsedData.payload
+
+                users.forEach(u => {
+                    if (u.rooms.includes(roomId)) {
+
+                        u.ws.send(JSON.stringify({
+                            type: "MESSAGE",
+                            payload: { roomId, userId, message }
+                        }));
+                    }
+                })
+            }
 
         } catch (error) {
 
@@ -87,5 +100,5 @@ wss.on('connection', function connection(ws) {
         }
     });
 
-    ws.send('something');
+    ws.send(JSON.stringify({ type: "CONNECTED", message: "WebSocket connected" }));
 });
