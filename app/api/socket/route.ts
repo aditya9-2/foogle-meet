@@ -62,6 +62,11 @@ wss.on('connection', function connection(ws) {
 
                 findUser.rooms = findUser.rooms.filter(rId => rId !== roomId);
 
+                // Remove user from `users` if they have no more rooms
+                if (users[userId].rooms.length === 0) {
+                    users.splice(userId, 1);
+                }
+
                 users.forEach(u => {
                     if (u.rooms.includes(roomId) && u.ws !== ws) {
                         u.ws.send(JSON.stringify({
