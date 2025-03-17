@@ -1,12 +1,24 @@
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 
 const wss = new WebSocketServer({ noServer: true });
 
 interface User {
-    ws: import("ws").WebSocket;
+    ws: WebSocket
     rooms: string[];
     userId: string;
 }
+
+enum Device {
+    Microphone = "microphone",
+    Camera = "camera"
+}
+
+enum State {
+    On = "on",
+    Off = "off",
+    Raised = "raised"
+}
+
 
 const users: User[] = [];
 
@@ -87,6 +99,27 @@ wss.on('connection', function connection(ws) {
                         u.ws.send(JSON.stringify({
                             type: "MESSAGE",
                             payload: { roomId, userId, message }
+                        }));
+                    }
+                })
+            }
+
+            if (parsedData.type === "TOGGLE_DEVICE") {
+                const { roomId, userId, device, state } = parsedData.payload;
+
+                if (!(device in Device) || !(state in State)) {
+                    ws.send(JSON.stringify({
+                        type: "error",
+                        message: "Invalid device or state"
+                    }));
+                    return;
+                }
+
+                users.forEach(u => {
+                    if (u.rooms.includes(roomId)) {
+                        u.ws.send(JSON.stringify({
+                            type: "DEVICE_TOGGLED",
+                            payload: { roomId, userId, device, state }
                         }));
                     }
                 })
