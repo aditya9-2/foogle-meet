@@ -16,7 +16,6 @@ enum Device {
 enum State {
     On = "on",
     Off = "off",
-    Raised = "raised"
 }
 
 
@@ -75,7 +74,7 @@ wss.on('connection', function connection(ws) {
                 findUser.rooms = findUser.rooms.filter(rId => rId !== roomId);
 
                 // Remove user from `users` if they have no more rooms
-                if (users[userId].rooms.length === 0) {
+                if (findUser.rooms.length === 0) {
                     const index = users.findIndex(u => u.userId === userId);
                     if (index !== -1) {
                         users.splice(index, 1);
@@ -110,7 +109,7 @@ wss.on('connection', function connection(ws) {
             if (parsedData.type === "TOGGLE_DEVICE") {
                 const { roomId, userId, device, state } = parsedData.payload;
 
-                if (!(device in Device) || !(state in State)) {
+                if (!Object.values(Device).includes(device) || !Object.values(State).includes(state)) {
                     ws.send(JSON.stringify({
                         type: "error",
                         message: "Invalid device or state"
@@ -130,9 +129,9 @@ wss.on('connection', function connection(ws) {
 
             if (parsedData.type === "RAISE_HAND") {
 
-                const { roomId, userId, state } = parsedData.payload;
+                const { roomId, userId, raised } = parsedData.payload;
 
-                if (!(state in State)) {
+                if (typeof raised !== "boolean") {
                     ws.send(JSON.stringify({
                         type: "error",
                         message: "Invalid state"
@@ -144,7 +143,7 @@ wss.on('connection', function connection(ws) {
                     if (u.rooms.includes(roomId)) {
                         u.ws.send(JSON.stringify({
                             type: "HAND_RAISED",
-                            payload: { roomId, userId, state }
+                            payload: { roomId, userId, raised }
                         }));
                     }
                 });
