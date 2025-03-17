@@ -12,7 +12,7 @@ const Navbar = () => {
                     <div className="flex items-center">
                         <span className="text-foreground text-2xl font-bold">Foogle Meet</span>
                     </div>
-                    <div className="hidden md:flex items-center space-x-4">
+                    <div className=" md:flex items-center space-x-4">
 
                         <SignedOut>
                             <SignInButton mode="modal">
