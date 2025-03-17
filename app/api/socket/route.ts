@@ -76,7 +76,10 @@ wss.on('connection', function connection(ws) {
 
                 // Remove user from `users` if they have no more rooms
                 if (users[userId].rooms.length === 0) {
-                    users.splice(userId, 1);
+                    const index = users.findIndex(u => u.userId === userId);
+                    if (index !== -1) {
+                        users.splice(index, 1);
+                    }
                 }
 
                 users.forEach(u => {
