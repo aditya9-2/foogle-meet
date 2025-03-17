@@ -125,6 +125,30 @@ wss.on('connection', function connection(ws) {
                 })
             }
 
+            if (parsedData.type === "RAISE_HAND") {
+
+                const { roomId, userId, state } = parsedData.payload;
+
+                if (!(state in State)) {
+                    ws.send(JSON.stringify({
+                        type: "error",
+                        message: "Invalid state"
+                    }));
+                    return;
+                }
+
+                users.forEach(u => {
+                    if (u.rooms.includes(roomId)) {
+                        u.ws.send(JSON.stringify({
+                            type: "HAND_RAISED",
+                            payload: { roomId, userId, state }
+                        }));
+                    }
+                });
+
+            }
+
+
         } catch (error) {
 
             console.error("Error processing message:", error);
