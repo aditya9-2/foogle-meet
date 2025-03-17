@@ -1,14 +1,18 @@
 "use client";
 import React from 'react'
-// import { HeroHighlight, Highlight } from '@/components/ui/hero-highlight'
 import { Highlight } from '@/components/ui/hero-highlight'
 import { motion } from "motion/react";
 
 import { Video } from 'lucide-react';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 
 const Hero = () => {
+
+    const router = useRouter();
+
     return (
         <div className="relative flex h-[35rem] w-full items-center justify-center bg-white dark:bg-black">
             <div
@@ -59,15 +63,28 @@ const Hero = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                    <HoverBorderGradient className="text-lg cursor-pointer flex gap-2 items-center">
-                        <Video className="mr-2 h-5 w-5" />
-                        New Meeting
-                    </HoverBorderGradient>
+                    <SignedOut>
+                        <SignInButton mode="modal">
+                            <HoverBorderGradient className="text-lg cursor-pointer flex gap-2 items-center">
+                                <Video className="mr-2 h-5 w-5" />
+                                New Meeting
+                            </HoverBorderGradient>
+                        </SignInButton>
+                    </SignedOut>
+                    <SignedIn>
+                        <HoverBorderGradient
+                            className="text-lg cursor-pointer flex gap-2 items-center"
+                            onClick={() => router.push(`meeting/123`)}
+                        >
+                            <Video className="mr-2 h-5 w-5" />
+                            New Meeting
+                        </HoverBorderGradient>
+                    </SignedIn>
                 </motion.p>
 
             </div>
 
-        </div>
+        </div >
     )
 }
 
