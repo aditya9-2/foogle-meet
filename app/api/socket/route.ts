@@ -52,6 +52,28 @@ wss.on('connection', function connection(ws) {
                 }));
             }
 
+            if (parsedData.type === "LEAVE_MEETING") {
+
+                const { roomId, userId } = parsedData.payload;
+
+                const findUser = users.find(u => u.ws === ws);
+
+                if (!findUser) return;
+
+                findUser.rooms = findUser.rooms.filter(rId => rId !== roomId);
+
+                users.forEach(u => {
+                    if (u.rooms.includes(roomId) && u.ws !== ws) {
+                        u.ws.send(JSON.stringify({
+                            type: "USER_LEFT",
+                            payload: { roomId, userId }
+                        }));
+                    }
+                });
+            }
+
+
+
         } catch (error) {
 
             console.error("Error processing message:", error);
