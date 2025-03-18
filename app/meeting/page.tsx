@@ -7,15 +7,15 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Video, Users } from 'lucide-react';
+import { generateMeetingId } from '@/utils/generateMeetingId';
 
 export default function MeetingPage() {
     const router = useRouter();
     const [meetingId, setMeetingId] = useState('');
 
     const createMeeting = () => {
-        // Todo: need to create a custom meeteing id like this -> atc-jdr-3bt
 
-        // router.push(`/meeting/${newMeetingId}`);
+        router.push(`/meeting/${generateMeetingId()}`);
     };
 
     const joinMeeting = (e: React.FormEvent) => {
