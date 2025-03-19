@@ -74,7 +74,7 @@ const Hero = () => {
                     <SignedIn>
                         <HoverBorderGradient
                             className="text-lg cursor-pointer flex gap-2 items-center"
-                            onClick={() => router.push(`meeting/123`)}
+                            onClick={() => router.push(`/meeting`)}
                         >
                             <Video className="mr-2 h-5 w-5" />
                             New Meeting
@@ -84,7 +84,7 @@ const Hero = () => {
 
             </div>
 
-        </div >
+        </div>
     )
 }
 
